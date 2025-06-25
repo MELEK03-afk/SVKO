@@ -1,6 +1,6 @@
 import Owner from "../../models/Owner.js";
 import Field from "../../models/Field.js";
-import nodemaile from "nodemailer"
+import nodemailer from "nodemailer"
 import Request from "../../models/request.js"
 import User from "../../models/User.js";
 // Fields Router
@@ -157,9 +157,10 @@ export const UpdateUSer = async(req,res) =>{
 }
 
 export const contactMessage = async(req,res)=>{
-    const{Message,phoneNumber,Name,email}=req.body
+    const{message,phone,name,email}=req.body
     try {
-        SendEmail(Message,phoneNumber,Name,email)
+        SendEmail(message,phone,name,email)
+        res.status(200).json({Message:"Updatet"})
     } catch (error) {
         console.log(error);
         
@@ -167,28 +168,41 @@ export const contactMessage = async(req,res)=>{
 }
 
 
-function SendEmail(message,Number,Name,email){
-        const transporter = nodemaile.createTransport({
-            service: 'gmail',
-            auth: {
-              user: 'meleksaket2003@gmail.com',
-              pass: 'ghqx emfa jzan lvrn'
-            }
-          });
-          
-          const mailOptions = {
-            from: `${email}`,
-            to: 'meleksaket2003@gmail.com',
-            subject: 'Sending Email using Node.js',
-            text: `Hi i'm ${Name} my phoneNumber is ${Number} my message is ${message}`
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
-      return email
+
+function SendEmail(message, Number, Name, email) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'meleksaket2003@gmail.com',
+      pass: 'ghqx emfa jzan lvrn' 
+    }
+  });
+
+  const mailOptions = {
+    from: `"${Name}" <${email}>`,
+    to: 'meleksaket2003@gmail.com',
+    subject: '📩 New Sport Booking Partner Request',
+    html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee;">
+        <h2 style="color: #0f766e;">New Partner Inquiry 📩</h2>
+        <p><strong>Name:</strong> ${Name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone Number:</strong> ${Number}</p>
+        <p><strong>Message:</strong></p>
+        <p style="background: #f3f4f6; padding: 10px; border-radius: 5px;">${message}</p>
+        <hr/>
+        <p style="font-size: 12px; color: #999;">Sent automatically from the Sport Booking website.</p>
+      </div>
+    `
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('✅ Email sent: ' + info.response);
+    }
+  });
+
+  return email;
 }
