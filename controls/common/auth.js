@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import validator from "validator"
 import User from "../../models/User.js"
 import Request from "../../models/request.js"
